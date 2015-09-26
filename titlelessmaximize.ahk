@@ -20,10 +20,10 @@ ShellMessage( wParam,lParam )
     If (wParam = 0x8004) {
         currWin := lParam
         WinGet, ProcessName, ProcessName, ahk_id %currWin%
-        OutputDebug %Style% %MinMax%
+        ;OutputDebug %Style% %MinMax%
 
         ;Ignore Store apps.
-        if (ProcessName == "WWAHost.exe"){
+        if (ProcessName == "WWAHost.exe" || ProcessName == "explorer.exe"){
             prevWin := lParam
             Return
         }
@@ -56,8 +56,8 @@ HideTitleBar(win){
     WinSet, Style, -0x00800000, ahk_id %win%
     ;WinMaximize, ahk_id %win%
     ;Force Redraw
-    WinHide, ahk_id %win%
-    WinShow, ahk_id %win%
+    ;WinHide, ahk_id %win%
+    ;WinShow, ahk_id %win%
 }
 
 ShowTitleBar(win){
