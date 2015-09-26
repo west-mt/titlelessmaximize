@@ -19,39 +19,43 @@ ShellMessage( wParam,lParam )
 {
     If (wParam = 0x8004) {
         currWin := lParam
- 
+        WinGet, ProcessName, ProcessName, ahk_id %currWin%
+        OutputDebug %Style% %MinMax%
+
+        ;Ignore Store apps.
+        if (ProcessName == "WWAHost.exe"){
+            prevWin := lParam
+            Return
+        }
+
+
         Sleep, 10
         ;WinGet currWin, ID, A
         WinGet MinMax, MinMax, ahk_id %currWin%
         WinGet Style, Style, ahk_id %currWin%
 
-        OutputDebug %Style% %MinMax%
+        ;OutputDebug %Style% %MinMax%
 
-        if(Style & 0x01000000){   ; Maximized
+        if((Style & 0x01000000) && (Style & 0x00800000)){   ; Maximized
             HideTitleBar(currWin)
         }
 
-        WinGet Style, Style, ahk_id %prevWin%
-        if(!(Style & 0x00800000)){   ; Titlebar hidden
-            ShowTitleBar(prevWin)
+        if(prevWin != currWin){
+            ;OutputDebug Different window! %currWin% %prevWin%
+            WinGet Style, Style, ahk_id %prevWin%
+            if(!(Style & 0x00800000)){   ; Titlebar hidden
+                ShowTitleBar(prevWin)
+            }
+            prevWin := lParam
         }
 
-        ;if((MinMax = 1) && (Style & 0x00800000)) {
-        ;    WinSet, Style, -0x800000, A
-        ;    ;force redraw
-        ;    ;WinSet, Redraw
-        ;    WinHide, A
-        ;    WinShow, A
-        ;}
-
-        prevWin := lParam
-        ;Global prevWin := lParam
     }
 }
 
 HideTitleBar(win){
     WinSet, Style, -0x00800000, ahk_id %win%
     ;WinMaximize, ahk_id %win%
+    ;Force Redraw
     WinHide, ahk_id %win%
     WinShow, ahk_id %win%
 }
