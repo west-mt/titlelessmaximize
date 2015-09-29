@@ -22,22 +22,21 @@ ShellMessage( wParam,lParam )
         WinGet, ProcessName, ProcessName, ahk_id %currWin%
         ;OutputDebug %Style% %MinMax%
 
-        ;Ignore Store apps.
-        if (ProcessName == "WWAHost.exe" || ProcessName == "explorer.exe"){
-            prevWin := lParam
-            Return
-        }
-
-
         Sleep, 10
         ;WinGet currWin, ID, A
+        WinGetClass, ClassName, ahk_id %currWin%
         WinGet MinMax, MinMax, ahk_id %currWin%
         WinGet Style, Style, ahk_id %currWin%
 
         ;OutputDebug %Style% %MinMax%
 
         if((Style & 0x01000000) && (Style & 0x00800000)){   ; Maximized
-            HideTitleBar(currWin)
+            ;Ignore Store apps and specific apps.
+            if(ProcessName == "WWAHost.exe" || ProcessName == "firefox.exe" || ClassName == "CabinetWClass"){
+
+            }else{
+                HideTitleBar(currWin)
+            }
         }
 
         if(prevWin != currWin){
@@ -66,3 +65,5 @@ ShowTitleBar(win){
     ;WinHide, ahk_id %win%
     ;WinShow, ahk_id %win%
 }
+
+
