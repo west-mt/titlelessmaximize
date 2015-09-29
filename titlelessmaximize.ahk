@@ -3,12 +3,21 @@ Gui +LastFound
 hWnd := WinExist()
 Global prevWin
 
-WinGet prevWin, ID, A
-WinGet Style, Style, ahk_id %prevWin%
+WinGet currWin, ID, A
+WinGet Style, Style, ahk_id %currWin%
+WinGet, ProcessName, ProcessName, ahk_id %currWin%
+WinGetClass, ClassName, ahk_id %currWin%
+
 if((Style & 0x01000000) && (Style & 0x00800000)){   ; Maximized
-    HideTitleBar(prevWin)
+    ;Ignore Store apps and specific apps.
+    if(ProcessName == "WWAHost.exe" || ProcessName == "firefox.exe" || ClassName == "CabinetWClass"){
+
+    }else{
+        HideTitleBar(currWin)
+    }
 }
 
+prevWin := currWin
 
 DllCall( "RegisterShellHookWindow", UInt,hWnd )
 MsgNum := DllCall( "RegisterWindowMessage", Str,"SHELLHOOK" )
